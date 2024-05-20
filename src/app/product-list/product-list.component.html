@@ -1,0 +1,52 @@
+<div class="grid grid-cols-12 ">
+    <div class="col-span-12 sm:col-span-2 p-4">
+        <div class="h-full rounded-3xl">
+            <div class="text-2xl text-rose-800 font-bold mb-4">
+                Categories
+            </div>
+            <div class="" *ngFor="let category of categories;">
+                <div>
+                    <button class="text-nowrap"(click)="filterByCategory(category)">
+                        {{category.charAt(0).toUpperCase() + category.slice(1)}}
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-span-12 sm:col-span-10 p-4 ">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div class="min-h-full" *ngFor="let product of filteredProducts; let i = index">
+                <div class="col h-full">
+                    <div class="rounded-xl overflow-hidden min-h-full custom-shadow">
+                        <div class="p-4">
+                            <div class="p-4 min-h-56 bg-rose-200">
+                                <img class="max-h-48 w-auto mx-auto" src={{product.image}} alt="">
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <div class="text-wrap font-semibold mb-3">{{product.title}}</div>
+                            <div class="mb-3 text-xl font-bold">
+                                {{"$ "+product.price}}
+                            </div>
+                            <div class="text-sm">
+                                <ng-container *ngIf="!showFullDescription[i]">
+                                    <p class="ease-in duration-300">{{ product.description  | slice:0:100  }}</p>
+                                    <button class="text-rose-900 font-semibold" (click)="toggleShowMore(i)">Show
+                                        more</button>
+                                </ng-container>
+                                <ng-container *ngIf="showFullDescription[i]">
+                                    <p class="ease-in duration-300">{{ product.description }}</p>
+                                    <button class="text-rose-900 font-semibold" (click)="toggleShowMore(i)">Show
+                                        less</button>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
