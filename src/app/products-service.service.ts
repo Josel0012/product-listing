@@ -11,7 +11,6 @@ export class ProductsServiceService {
   async getProducts(): Promise<any> {
     try {
       const response = await fetch(`${this.url}`);
-      console.log("FETCHHH");
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
