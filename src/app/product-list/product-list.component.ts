@@ -1,17 +1,32 @@
-import { AfterViewInit, Component,  } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { ProductsServiceService } from '../products-service.service';
 
+interface Product {
+  id: number;
+  title: string;
+  image: string;
+  price: number;
+  description: string;
+  category: string;
+}
+
+interface ProductsResponse {
+  status: string;
+  message: string;
+  products: Product[];
+}
 @Component({
   selector: 'app-product-list',
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss'],
 })
 export class ProductListComponent {
-  products: any[] = []
-  filteredProducts: any[] = []
-  categories: any[] = []
-  category: string = 'All'
-  showFullDescription: boolean[] = Array(this.products.length).fill(false);
+  products: Product[] = [];
+  filteredProducts: any[] = [];
+  categories: any[] = [];
+  category: string = 'All';
+  showFullDescription = Array(this.products.length).fill(false);
+  currenIndex!: number;
 
   constructor(private productService: ProductsServiceService) {
     this.fetchProducts();
@@ -19,13 +34,16 @@ export class ProductListComponent {
   }
 
   toggleShowMore(index: number) {
+    this.showFullDescription[this.currenIndex] = !this.showFullDescription[this.currenIndex];
     this.showFullDescription[index] = !this.showFullDescription[index];
+    this.currenIndex = index;
   }
 
   async fetchProducts() {
     try {
-      this.products = await this.productService.getProducts();
-      this.filteredProducts = this.products
+      const products: ProductsResponse = await this.productService.getProducts();
+      this.products = products.products;
+      this.filteredProducts = this.products;
     } catch (error) {
       console.error('Error fetching data in component: ', error);
     }
@@ -35,7 +53,9 @@ export class ProductListComponent {
     // const defaultCategory: any = document.querySelector('#all');
     // defaultCategory.classList.add('active')
     try {
-      this.categories = await this.productService.getCategories();
+      const categories: ProductsResponse = await this.productService.getCategories();
+      this.categories = categories.products.map((item) => item.category);
+      this.categories = [...new Set(this.categories)];
       this.categories.unshift('all');
     } catch (error) {
       console.error('Error fetching data in component: ', error);
@@ -43,12 +63,14 @@ export class ProductListComponent {
   }
 
   async filterByCategory(category: string) {
-    this.category = category
-    if(category === 'all'){
+    this.category = category;
+    if (category === 'all') {
       this.filteredProducts = this.products;
-      return
+      return;
     }
-    this.filteredProducts = this.products.filter(product => product.category === category)
+    this.filteredProducts = this.products.filter(
+      (product) => product.category === category
+    );
   }
 
   setActive(clickedItem: HTMLElement): void {

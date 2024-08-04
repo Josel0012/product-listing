@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class ProductsServiceService {
 
-  url = "https://fakestoreapi.com/products"
+  url = "https://fakestoreapi.in/api/products"
   constructor() { }
 
   async getProducts(): Promise<any> {
@@ -23,7 +23,7 @@ export class ProductsServiceService {
 
   async getCategories(): Promise<any> {
     try {
-      const response = await fetch(`${this.url}/categories`);
+      const response = await fetch(`${this.url}`);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
